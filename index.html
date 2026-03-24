@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lời Chúc Từ Hư Không</title>
+    <title>Bí Mật Dành Cho Bạn</title>
     <style>
         body, html {
             margin: 0; padding: 0; overflow: hidden;
@@ -34,7 +34,7 @@
 
     <div id="input-screen">
         <h2>NHẬP NGÀY SINH CỦA BẠN</h2>
-        <input type="text" id="dob" placeholder="VD: 01/01">
+        <input type="text" id="dob" placeholder="Định dạng: DD/MM">
         <br>
         <button onclick="startEffect()">XÁC NHẬN</button>
     </div>
@@ -48,7 +48,11 @@
         const petals = [];
         const petalCount = 600; 
         const heartPoints = [];
-        let textOpacity = 0; // Độ mờ của dòng chữ ở giữa
+        let textOpacity = 0;
+
+        // === CHỈNH NGÀY SINH ĐÚNG Ở ĐÂY ===
+        const NGAY_SINH_DUNG = "26/11"; 
+        // ================================
 
         function initCanvas() {
             width = canvas.width = window.innerWidth;
@@ -96,7 +100,7 @@
         }
 
         function drawText() {
-            if (textOpacity < 1) textOpacity += 0.005; // Chữ hiện lên từ từ
+            if (textOpacity < 1) textOpacity += 0.005;
             ctx.save();
             ctx.globalAlpha = textOpacity;
             ctx.fillStyle = "#ffffff";
@@ -109,34 +113,35 @@
         }
 
         function startEffect() {
-            const val = document.getElementById('dob').value;
-            if(!val) return alert("Vui lòng nhập ngày sinh!");
+            const inputVal = document.getElementById('dob').value.trim();
 
-            document.getElementById('input-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('input-screen').style.display = 'none';
-                canvas.style.display = 'block';
-                initCanvas();
-                calculateHeart();
-                for (let i = 0; i < petalCount; i++) {
-                    petals.push(new Petal(heartPoints[i]));
-                }
-                animate();
-            }, 800);
+            // KIỂM TRA ĐÚNG SAI Ở ĐÂY
+            if (inputVal === 26/11/2009) {
+                // Nếu đúng -> Chạy hiệu ứng
+                document.getElementById('input-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('input-screen').style.display = 'none';
+                    canvas.style.display = 'block';
+                    initCanvas();
+                    calculateHeart();
+                    for (let i = 0; i < petalCount; i++) {
+                        petals.push(new Petal(heartPoints[i]));
+                    }
+                    animate();
+                }, 800);
+            } else {
+                // Nếu sai -> Hiện thông báo
+                alert("Sai ngày sinh rồi nè! Thử lại xem nào 😜");
+            }
         }
 
         function animate() {
-            // Xóa nhẹ để tạo hiệu ứng chuyển động mượt
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, width, height);
-            
             petals.forEach(p => p.update());
-            
-            // Vẽ chữ khi các cánh hoa đã bay được một lúc
             if (petals[0].opacity > 0.5) {
                 drawText();
             }
-
             requestAnimationFrame(animate);
         }
 
